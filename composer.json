@@ -1,0 +1,12 @@
+{
+    "name": "gander/mmame-recruitment-task",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Gander\\MmameRecruitmentTask\\": "src/"
+        }
+    },
+    "require": {
+        "php": "^8.0"
+    }
+}
