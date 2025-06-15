@@ -1,5 +1,21 @@
 
 services:
+  frankenphp:
+    build:
+      context: .
+      dockerfile_inline: |
+        FROM dunglas/frankenphp
+        RUN install-php-extensions pdo_mysql
+    environment:
+      FRANKENPHP_CONFIG: "worker ./public/index.php"
+      APP_RUNTIME: "Runtime\\FrankenPhpSymfony\\Runtime"
+    volumes:
+      - .:/app
+    ports:
+      - '80:80'
+      - '443:443'
+      - '443:443/udp'
+
 ###> doctrine/doctrine-bundle ###
   database:
     image: mysql:8.0
