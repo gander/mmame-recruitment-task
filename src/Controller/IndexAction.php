@@ -9,6 +9,7 @@ use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Symfony\Component\Routing\Attribute\Route;
+use Twig\Environment as Templating;
 
 #[Route('/')]
 final class IndexAction
@@ -17,6 +18,7 @@ final class IndexAction
         ServerRequestInterface   $request,
         ResponseFactoryInterface $responseFactory,
         DbalConnection           $connection,
+        Templating               $twig,
     ): ResponseInterface
     {
         $params = $request->getQueryParams();
@@ -45,11 +47,13 @@ final class IndexAction
             $query->orderBy('id', 'ASC');
         }
 
-        $records = $query->executeQuery()->fetchAllAssociative();
+        $records = $query->executeQuery()->fetchAllNumeric();
+
+        $data = $twig->render('index.html.twig', ['records' => $records]);
 
         return $responseFactory
             ->createResponse()
-            ->withHeader('Content-Type', 'application/json')
-            ->withBody($responseFactory->createStream(json_encode($records)));
+            ->withHeader('Content-Type', 'text/html')
+            ->withBody($responseFactory->createStream($data));
     }
 }
